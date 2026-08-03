@@ -1,66 +1,45 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { PrismaClient } from "@prisma/client";
 
-export default function Home() {
+const prisma = new PrismaClient();
+
+export default async function Home() {
+  // Fetch real data from DB
+  const pendingInstallments = await prisma.installment.count({
+    where: { isPaid: false }
+  });
+  
+  const productsCount = await prisma.product.count();
+  const customersCount = await prisma.customer.count();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div>
+      <header style={{ marginBottom: '24px', paddingTop: '20px' }}>
+        <h1 style={{ color: 'var(--primary)', marginBottom: '8px' }}>نظام التقسيط والكاشير</h1>
+        <p style={{ color: 'var(--text-secondary)' }}>مرحباً بك، إليك ملخص اليوم</p>
+      </header>
+
+      <div className="card" style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))', color: 'white' }}>
+        <h3 style={{ marginBottom: '8px', opacity: 0.9 }}>الأقساط المتأخرة</h3>
+        <div style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>{pendingInstallments}</div>
+        <p style={{ marginTop: '8px', fontSize: '0.875rem', opacity: 0.8 }}>أقساط تحتاج للمتابعة هذا الأسبوع</p>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+        <div className="card" style={{ marginBottom: 0, textAlign: 'center' }}>
+          <h4 style={{ color: 'var(--text-secondary)', marginBottom: '8px', fontSize: '0.875rem' }}>المنتجات</h4>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary)' }}>{productsCount}</div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="card" style={{ marginBottom: 0, textAlign: 'center' }}>
+          <h4 style={{ color: 'var(--text-secondary)', marginBottom: '8px', fontSize: '0.875rem' }}>العملاء</h4>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--secondary)' }}>{customersCount}</div>
         </div>
-      </main>
+      </div>
+
+      <h3 style={{ marginBottom: '16px' }}>إجراءات سريعة</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <button className="btn btn-primary">فاتورة كاشير جديدة</button>
+        <button className="btn btn-secondary">إضافة منتج جديد</button>
+      </div>
     </div>
   );
 }
