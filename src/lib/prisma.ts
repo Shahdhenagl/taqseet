@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-
-// Determine the sqlite DB file path
-const dbPath = process.env.DATABASE_URL?.replace('file:', '') || 'prisma/dev.db';
-
-const adapter = new PrismaBetterSqlite3({ url: dbPath });
+const adapter = new PrismaMariaDb({
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "u708961508_taqseet",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "u708961508_taqseet",
+  connectionLimit: 5,
+});
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
