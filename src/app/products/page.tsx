@@ -20,7 +20,7 @@ export default async function ProductsPage() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {products.map(product => (
+          {products.map((product: any) => (
             <div key={product.id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h3 style={{ margin: 0, marginBottom: '4px' }}>{product.name}</h3>
