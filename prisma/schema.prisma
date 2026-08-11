@@ -23,6 +23,7 @@ model Customer {
   name           String
   phoneNumber    String
   whatsappNumber String?
+  accessCode     String   @unique @default(cuid())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -82,6 +83,21 @@ model Installment {
   planId      String
   plan        InstallmentPlan @relation(fields: [planId], references: [id])
   
+  postponementRequests PostponementRequest[]
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model PostponementRequest {
+  id               String   @id @default(cuid())
+  installmentId    String
+  installment      Installment @relation(fields: [installmentId], references: [id])
+  requestedDueDate DateTime
+  extraFee         Float    @default(0)
+  status           String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  reason           String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
